@@ -36,12 +36,10 @@ selected_date = None
 
 if st.session_state.mode == "tomorrow":
     selected_date = date.today()
-    st.write("test 1")
 
 elif st.session_state.mode == "history":
     selected_date = st.date_input("Sélectionnez une date passée :", max_value=date.today())
     st.toast("✅ Nouvelle prédiction générée")
-    st.write("test 2")
 
 # --- Call our API ---
 
