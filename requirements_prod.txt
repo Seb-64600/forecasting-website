@@ -1,7 +1,0 @@
-# Requirement pour API en prod
-fastapi
-uvicorn
-streamlit
-plotly
-requests
-datetime
