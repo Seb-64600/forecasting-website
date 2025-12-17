@@ -1,0 +1,5 @@
+# Requirement pour API en prod
+streamlit
+plotly
+requests
+datetime
