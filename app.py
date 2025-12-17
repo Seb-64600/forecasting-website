@@ -63,58 +63,56 @@ response_predict = requests.get(url_predict, params=params_predict)
 reponse_get_gold = requests.get(url_get_gold,params_get_gold)
 
 # --- SECTION : Graphique --
-
-if (response_predict.status_code & reponse_get_gold.status_code) == 200:
 # --- Génération de dates ---
 
-    # Renseigner ici toutes les dates réelles provenant de notre response_get_gold
-    real_dates = list(reponse_get_gold.json()["value"].keys())
-    predicted_date = selected_date.strftime('%Y-%m-%d')        # J+1
+# Renseigner ici toutes les dates réelles provenant de notre response_get_gold
+real_dates = list(reponse_get_gold.json()["value"].keys())
+predicted_date = selected_date.strftime('%Y-%m-%d')        # J+1
 
-    # --- Valeurs réelles ---
-    # Renseigner ici tous les prix de cloture réelles provenant de notre response_get_gold
-    real_values = list(reponse_get_gold.json()["value"].values())
+# --- Valeurs réelles ---
+# Renseigner ici tous les prix de cloture réelles provenant de notre response_get_gold
+real_values = list(reponse_get_gold.json()["value"].values())
 
-    # --- Valeur prédite ---
-    predicted_value = round(response_predict.json()["prediction"], 2)
+# --- Valeur prédite ---
+predicted_value = round(response_predict.json()["prediction"], 2)
 
-    # ✅ Détermination de la couleur selon la direction
-    if predicted_value > real_values[-1]:
-        pred_color = "rgba(0, 255, 0, 0.6)"   # vert estompé
-    else:
-        pred_color = "rgba(255, 0, 0, 0.6)"   # rouge estompé
+# ✅ Détermination de la couleur selon la direction
+if predicted_value > real_values[-1]:
+    pred_color = "rgba(0, 255, 0, 0.6)"   # vert estompé
+else:
+    pred_color = "rgba(255, 0, 0, 0.6)"   # rouge estompé
 
-    fig = go.Figure()
+fig = go.Figure()
 
-    # --- Courbe réelle (bleu) ---
-    fig.add_trace(go.Scatter(
-        x=real_dates,
-        y=real_values,
-        mode='lines',
-        name='Réel',
-        line=dict(color='blue', width=3)
-    ))
+# --- Courbe réelle (bleu) ---
+fig.add_trace(go.Scatter(
+    x=real_dates,
+    y=real_values,
+    mode='lines',
+    name='Réel',
+    line=dict(color='blue', width=3)
+))
 
-    # --- Segment pointillé dynamique ---
-    fig.add_trace(go.Scatter(
-        x=[real_dates[-1], predicted_date],
-        y=[real_values[-1], predicted_value],
-        mode='lines+markers',
-        name='Prévision',
-        line=dict(color=pred_color, width=3, dash='dash'),
-        marker=dict(size=10, color=pred_color)
-    ))
+# --- Segment pointillé dynamique ---
+fig.add_trace(go.Scatter(
+    x=[real_dates[-1], predicted_date],
+    y=[real_values[-1], predicted_value],
+    mode='lines+markers',
+    name='Prévision',
+    line=dict(color=pred_color, width=3, dash='dash'),
+    marker=dict(size=10, color=pred_color)
+))
 
-    fig.update_layout(
-        template='plotly_dark',
-        showlegend=True,
-        xaxis_title="Date (jour)",
-        yaxis_title="Prix de cloture (dollar)"
-    )
+fig.update_layout(
+    template='plotly_dark',
+    showlegend=True,
+    xaxis_title="Date (jour)",
+    yaxis_title="Prix de cloture (dollar)"
+)
 
-    st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True)
 
-else : st.error("API call failed. Please check your parameters or API URL.")
+
 
 # Affichage du disclaimer
 
